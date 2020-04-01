@@ -63,6 +63,7 @@ class data:
                 keyname = self.sheet.cell(row=r, column=c).value
                 key_names.append(keyname)
         
+        # Create dict of lists
         if keys is 'columns':
             first_range = self.row_range
             second_range = self.col_range
@@ -73,7 +74,6 @@ class data:
         for i in range(len(key_names)):
             val = ""
             valuelist = []
-
             for f in range(first_range[0], first_range[1]):
                 if keys is 'columns':
                     r = f
@@ -86,9 +86,7 @@ class data:
                 if self.skip_none is True and val is None:
                     continue
                 valuelist.append(val)
-
             dataDict[key_names[i]] = valuelist
-        #raise NotImplementedError
         return dataDict
 
     def list_of(self, list_type='string',
@@ -138,9 +136,10 @@ class data:
         if keys is None:
             keys = 'rows'
         if list_type is 'dict':
-            return self.dict_list(keys)
+            return self.dict_list(keys, key_names, key_index)
         if delimiter is None:
             delimiter = self.delimiter
+        
         # Read data and create list
         dataList = []
         if keys is 'rows':
@@ -172,6 +171,7 @@ class data:
                 ):
                     continue
             dataList.append(dataCol)
+        
         # Create single list if data calls for it
         if list_type is 'string' and len(dataList) == 1:
             dataList = str(dataList[0])
@@ -183,13 +183,14 @@ class data:
                         newList.append(d[0])
                     except:
                         newList.append('')
+                dataList = newList    
             if row_range[0] + 1 == row_range[1]:
                 for d in dataList[0]:
                     try:
                         newList.append(d)
                     except:
                         newList.append('')
-            dataList = newList
+                dataList = newList
         if alerts is True:
             print('Done')
         return dataList
